@@ -1,41 +1,39 @@
-from flask import Flask, render_template, request, jsonify
-
-import pymongo
+from flask import Flask, render_template, request, jsonify, json
 from flask_pymongo import PyMongo
+from flask_opentracing import FlaskTracing
 
-import logging
 from jaeger_client import Config
+import logging
+from os import getenv
+
 from prometheus_flask_exporter import PrometheusMetrics
 
-import os
+
+JAEGER_HOST = getenv('JAEGER_HOST', 'localhost')
 
 app = Flask(__name__)
-metrics = PrometheusMetrics(app)
 
-# static information as metric. Adapted from https://github.com/rycus86/prometheus_flask_exporter/blob/master/examples/sample-signals/app/app.py
-metrics.info('app_info', 'Application info', version='1.0.3')
-
-by_full_path_counter = metrics.counter('full_path_counter', 'counting requests by full path', labels={
-    'full_path': lambda: request.full_path})
-
-by_endpoint_counter = metrics.counter('endpoint_counter', 'counting requestby endpoint', labels={
-    'endpoint': lambda: request.endpoint})
-
-endpoints = ('', 'star', 'api')
-
-JAEGER_AGENT_HOST = os.getenv('JAEGER_AGENT_HOST', 'localhost')
-
-app.config["MONGO_DBNAME"] = "example-mongodb"
-app.config[
-    "MONGO_URI"
-] = "mongodb://example-mongodb-svc.default.svc.cluster.local:27017/example-mongodb"
-
+app.config['MONGO_DBNAME'] = 'example-mongodb'
+app.config['MONGO_URI'] = 'mongodb://example-mongodb-svc.default.svc.cluster.local:27017/example-mongodb'
 mongo = PyMongo(app)
 
-logger = logging.getLogger(__name__)
+metrics = PrometheusMetrics(app, group_by='endpoint')
+metrics.info('app_info', 'Backend', version='1.0.3')
+
+metrics.register_default(
+    metrics.counter(
+        'by_path_counter', 'Request count by request paths',
+        labels={'path': lambda: request.path}
+    )
+)
+
+endpoint_counter = metrics.counter(
+    'endpoint_counter', 'Request count by endpoints',
+    labels={'endpoint': lambda: request.endpoint}
+)
 
 
-def init_tracer(service_name="backend-service"):
+def init_tracer(backend):
     logging.getLogger('').handlers = []
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
@@ -46,60 +44,54 @@ def init_tracer(service_name="backend-service"):
                 'param': 1,
             },
             'logging': True,
-            'local_agent': {
-                'reporting_host': 'my-traces-agent.observability.svc.cluster.local'
-            }
+            'local_agent': {'reporting_host': JAEGER_HOST},
         },
-        service_name=service_name,
-        validate=True
+        service_name=backend,
     )
 
+    # this call also sets opentracing.tracer
     return config.initialize_tracer()
 
 
-tracer = init_tracer("backend-service")
+tracer = init_tracer('backend-service')
+tracing = FlaskTracing(tracer, True, app)
 
 
-@app.route("/")
-@by_full_path_counter
-@by_endpoint_counter
+@app.route('/')
+@endpoint_counter
 def homepage():
-    with tracer.start_span('homepage-span') as span:
-        span.set_tag('homepage-tag', '95')
-        return "Hello World"
+    with tracer.start_span('hello-world'):
+        message = "Hello World"
+    return message
 
 
-@app.route("/api")
-@by_full_path_counter
-@by_endpoint_counter
+@app.route('/api')
+@endpoint_counter
 def my_api():
-    with tracer.start_span('my_api_span') as span:
-        span.set_tag('my_api-tag', '90')
+    with tracer.start_span('api'):
         answer = "something"
-        return jsonify(reponse=answer)
+    return jsonify(repsonse=answer)
 
 
 @app.route('/star', methods=['POST'])
-@by_full_path_counter
-@by_endpoint_counter
+@endpoint_counter
 def add_star():
-    with tracer.start_span('star_span') as span:
-        span.set_tag('star-tag', '80')
-
-        try:
-            star = mongo.db.stars
-            name = request.json['name']
-            distance = request.json['distance']
-            star_id = star.insert({'name': name, 'distance': distance})
-            new_star = star.find_one({'_id': star_id})
-            output = {'name': new_star['name'],
-                      'distance': new_star['distance']}
-            return jsonify({'result': output})
-        except Exception as e:
-            logger.error(f"Unable to add a star")
-            span.set_tag("http.status_code", "500")
-            print(e)
+    star = mongo.db.stars
+    name = request.json['name']
+    distance = request.json['distance']
+    star_id = star.insert({'name': name, 'distance': distance})
+    new_star = star.find_one({'_id': star_id})
+    output = {'name': new_star['name'], 'distance': new_star['distance']}
+    return jsonify({'result': output})
 
 
-if __name__ == "__main__":
-    app.run(threaded=True)
+@endpoint_counter
+@app.route('/status')
+def healthcheck():
+    response = app.response_class(
+        response=json.dumps({"result": "OK - healthy"}),
+        status=200,
+        mimetype='application/json'
+    )
+    app.logger.info('Status request successfull')
+    return response
