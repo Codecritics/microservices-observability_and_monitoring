@@ -12,6 +12,10 @@ RUN apt-get update && \
     pip install --upgrade pip && \
     pip install -r requirements.txt
 
+ENV PROMETHEUS_MULTIPROC_DIR /tmp/PROMETHEUS_MULTIPROC_DIR
+RUN mkdir -p /tmp/PROMETHEUS_MULTIPROC_DIR && \
+    chmod 0777 -R /tmp/PROMETHEUS_MULTIPROC_DIR
+
 EXPOSE 8080
 
 CMD ["gunicorn", "--access-logfile", "-", "--error-logfile", "-", "-w", "4", "-b", "0.0.0.0:8080", "app:app"]
