@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trial-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: trial
+      release: prometheus
+  template:
+    metadata:
+      labels:
+        app: trial
+        release: prometheus
+    spec:
+      containers:
+        - name: trial
+          image: codecritics/metrics-trial:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
