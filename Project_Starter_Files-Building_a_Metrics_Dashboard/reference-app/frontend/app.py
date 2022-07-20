@@ -1,62 +1,42 @@
+from flask import Flask, render_template, request
 
-
-from flask import Flask, json, render_template
-from prometheus_flask_exporter import PrometheusMetrics
-from prometheus_flask_exporter.multiprocess import GunicornInternalPrometheusMetrics
 import logging
-import time
-import random
-import threading
-import requests
-
-from flask_cors import CORS
-from flask_opentracing import FlaskTracing
-
 from jaeger_client import Config
-from jaeger_client.metrics.prometheus import PrometheusMetricsFactory
+from prometheus_flask_exporter import PrometheusMetrics
 
-from opentelemetry import trace
-from opentelemetry.exporter import jaeger
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchExportSpanProcessor
-from opentelemetry.instrumentation.flask import FlaskInstrumentor
-from opentelemetry.instrumentation.requests import RequestsInstrumentor
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import (
-    ConsoleSpanExporter,
-    SimpleExportSpanProcessor,
-)
-
-logging.basicConfig(level=logging.INFO)
-
-trace.set_tracer_provider(TracerProvider())
-trace.get_tracer_provider().add_span_processor(
-    SimpleExportSpanProcessor(ConsoleSpanExporter())
-)
 app = Flask(__name__)
-FlaskInstrumentor().instrument_app(app)
-RequestsInstrumentor().instrument()
-
 metrics = PrometheusMetrics(app)
-# metrics = GunicornInternalPrometheusMetrics(app)
-metrics.info("app_info", "App Info, this can be anything you want", version="1.0.0")
-CORS(app)
 
-config = Config(
-    config={
-        'sampler':
-        {'type': 'const',
-         'param': 1},
-                        'logging': True,
-                        'reporter_batch_size': 1,},
-                        service_name="service")
-jaeger_tracer = config.initialize_tracer()
-tracing = FlaskTracing(jaeger_tracer, True, app)
+metrics.info('app_info', 'Frontend', version='1.0.3')
+
+endpoint_counter = metrics.counter('endpoint_counter', 'counting requestby endpoint', labels={
+    'endpoint': lambda: request.endpoint})
+
+
+# Tracing Initialization
+def init_tracer(service_name="fronend-service"):
+    logging.getLogger('').handlers = []
+    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+
+    config = Config(
+        config={
+            'logging': True,
+        },
+        service_name=service_name,
+        validate=True
+    )
+
+    return config.initialize_tracer()
+
+
+tracer = init_tracer("fronend-service")
+
 
 @app.route("/")
+@endpoint_counter
 def homepage():
     return render_template("main.html")
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(threaded=True)
