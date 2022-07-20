@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify, json
 from flask_pymongo import PyMongo
-from flask_opentracing import FlaskTracing
 
 from jaeger_client import Config
 import logging
@@ -54,7 +53,6 @@ def init_tracer(backend):
 
 
 tracer = init_tracer('backend-service')
-tracing = FlaskTracing(tracer, True, app)
 
 
 @app.route('/')
