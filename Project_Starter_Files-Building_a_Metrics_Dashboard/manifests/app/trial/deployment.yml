@@ -7,16 +7,13 @@ spec:
   selector:
     matchLabels:
       app: trial
-      release: prometheus
   template:
     metadata:
       labels:
         app: trial
-        release: prometheus
     spec:
       containers:
         - name: trial
-          image: codecritics/metrics-trial:latest
-          imagePullPolicy: Always
+          image: ghcr.io/jasonsmithio/trial:v1
           ports:
             - containerPort: 8080

@@ -52,7 +52,7 @@ def init_tracer(backend):
     return config.initialize_tracer()
 
 
-tracer = init_tracer('backend-service')
+tracer = init_tracer('backend')
 
 
 @app.route('/')

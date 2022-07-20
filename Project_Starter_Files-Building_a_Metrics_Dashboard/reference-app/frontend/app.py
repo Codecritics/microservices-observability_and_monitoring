@@ -9,12 +9,12 @@ metrics = PrometheusMetrics(app)
 
 metrics.info('app_info', 'Frontend', version='1.0.3')
 
-endpoint_counter = metrics.counter('endpoint_counter', 'counting requestby endpoint', labels={
+endpoint_counter = metrics.counter('endpoint_counter', 'counting request by endpoint', labels={
     'endpoint': lambda: request.endpoint})
 
 
 # Tracing Initialization
-def init_tracer(service_name="fronend-service"):
+def init_tracer(service_name="frontend-service"):
     logging.getLogger('').handlers = []
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
@@ -29,7 +29,7 @@ def init_tracer(service_name="fronend-service"):
     return config.initialize_tracer()
 
 
-tracer = init_tracer("fronend-service")
+tracer = init_tracer("frontend-service")
 
 
 @app.route("/")
