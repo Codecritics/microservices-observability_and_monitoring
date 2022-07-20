@@ -3,19 +3,27 @@
 ## Verify the monitoring installation
 
 *TODO:* run `kubectl` command to show the running pods and services for all components. Take a screenshot of the output and include it here to verify the installation
-
+![](answer-img/all-resources.png)
 ## Setup the Jaeger and Prometheus source
 *TODO:* Expose Grafana to the internet and then setup Prometheus as a data source. Provide a screenshot of the home page after logging into Grafana.
-
+![](answer-img/expose-grafana.png)
 ## Create a Basic Dashboard
 *TODO:* Create a dashboard in Grafana that shows Prometheus as a source. Take a screenshot and include it here.
-
+![](answer-img/datasource-prometheus.png)
 ## Describe SLO/SLI
 *TODO:* Describe, in your own words, what the SLIs are, based on an SLO of *monthly uptime* and *request response time*.
+* Describe, in your own words, what the SLIs are, based on an SLO of *monthly uptime* and *request response time*.
+SLIs stand for Service Level Indicators, it is a specific metric used to measure a performance of a service.
+Based on an SLO of monthly uptime and request response time, SLIs are the measurement of the SLO. SLIs expose on
+real time how a service is performing to show whether the SLOs is achieved.
 
 ## Creating SLI metrics.
 *TODO:* It is important to know why we want to measure certain metrics for our customer. Describe in detail 5 metrics to measure these SLIs. 
-
+1. Request Latency: The time taken to serve a request (usually measured in ms).
+2. System Throughput: The requests per second.
+3. Uptime: A percentage of availability during a specific period (minutes or hours ect..).
+4. Traffic: The amount of stress on a system from demand (such as the number of HTTP requests/second.
+5. Error Rate: The errors often expressed as a fraction of all requests received. (eg. percentage of HTTP 500 responses).
 ## Create a Dashboard to measure our SLIs
 *TODO:* Create a dashboard to measure the uptime of the frontend and backend services We will also want to measure to measure 40x and 50x errors. Create a dashboard that show these values over a 24 hour period and take a screenshot.
 
