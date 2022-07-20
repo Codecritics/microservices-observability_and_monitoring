@@ -1,9 +1,11 @@
-from flask import Flask, jsonify, json, request
-from jaeger_client.metrics.prometheus import PrometheusMetricsFactory
+import logging
+
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from flask_opentracing import FlaskTracing
+from flask_pymongo import PyMongo
+from jaeger_client import Config
 from opentelemetry import trace
-from opentelemetry.exporter import jaeger
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchExportSpanProcessor
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.sdk.trace import TracerProvider
@@ -11,20 +13,7 @@ from opentelemetry.sdk.trace.export import (
     ConsoleSpanExporter,
     SimpleExportSpanProcessor,
 )
-
-import logging
-import logging
-import time
-import random
-import threading
-import requests
-from flask_cors import CORS
-from flask_pymongo import PyMongo
-from jaeger_client import Config
-from flask_opentracing import FlaskTracing
-
 from prometheus_flask_exporter import PrometheusMetrics
-from prometheus_flask_exporter.multiprocess import GunicornInternalPrometheusMetrics
 
 logging.basicConfig(level=logging.INFO)
 
