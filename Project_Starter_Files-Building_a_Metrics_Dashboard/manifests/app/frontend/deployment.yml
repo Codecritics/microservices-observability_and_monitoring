@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - env:
+            - name: JAEGER_AGENT_HOST
+              value: my-traces-agent.observability.svc.cluster.local
+          name: backend
+          image: codecritics/metrics-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              resources:
+                requests:
+                  cpu: 25m
+                  memory: 64Mi
+                limits:
+                  cpu: 410m
+                  memory: 512Mi
+      restartPolicy: Always
