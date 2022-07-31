@@ -1,5 +1,9 @@
-from flask import Flask, render_template, request, jsonify, json
-
+from flask import Flask, jsonify, json, render_template
+import time
+import random
+import threading
+import requests
+from flask_cors import CORS
 from jaeger_client import Config
 from jaeger_client.metrics.prometheus import PrometheusMetricsFactory
 from opentelemetry import trace
@@ -14,6 +18,7 @@ from opentelemetry.sdk.trace.export import (
     SimpleExportSpanProcessor,
 )
 from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_flask_exporter.multiprocess import GunicornInternalPrometheusMetrics
 import logging
 
 trace.set_tracer_provider(TracerProvider())
@@ -21,25 +26,17 @@ trace.get_tracer_provider().add_span_processor(
     SimpleExportSpanProcessor(ConsoleSpanExporter())
 )
 
+logging.basicConfig(level=logging.INFO)
+logging.info("Setting LOGLEVEL to INFO")
+
 app = Flask(__name__)
-metrics = PrometheusMetrics(app)
-
-metrics.info('app_info', 'Trial', version='1.0.0')
-
 FlaskInstrumentor().instrument_app(app)
 RequestsInstrumentor().instrument()
 
-metrics.register_default(
-    metrics.counter(
-        'by_path_counter', 'Request count by request paths',
-        labels={'path': lambda: request.path}
-    )
-)
-
-endpoint_counter = metrics.counter(
-    'endpoint_counter', 'Request count by endpoints',
-    labels={'endpoint': lambda: request.endpoint}
-)
+metrics = PrometheusMetrics(app)
+# metrics = GunicornInternalPrometheusMetrics(app)
+metrics.info("app_info", "App Info, this can be anything you want", version="1.0.0")
+CORS(app)
 
 
 def init_tracer(service):
@@ -57,6 +54,7 @@ def init_tracer(service):
         service_name=service,
     )
 
+    # this call also sets opentracing.tracer
     return config.initialize_tracer()
 
 
@@ -64,7 +62,6 @@ tracer = init_tracer('first-service')
 
 
 @app.route('/')
-@endpoint_counter
 def homepage():
     return render_template("main.html")
     with tracer.start_span('get-python-jobs') as span:
@@ -81,4 +78,4 @@ def homepage():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, )
+    app.run(debug=True)
