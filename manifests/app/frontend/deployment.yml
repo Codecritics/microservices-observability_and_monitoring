@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
   labels:
-    name: frontend
+    app: frontend
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/path: /metrics

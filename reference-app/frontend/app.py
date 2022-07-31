@@ -14,7 +14,7 @@ endpoint_counter = metrics.counter('endpoint_counter', 'counting request by endp
 
 
 # Tracing Initialization
-def init_tracer(service_name="frontend-service"):
+def init_tracer(service_name="frontend"):
     logging.getLogger('').handlers = []
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
@@ -29,7 +29,7 @@ def init_tracer(service_name="frontend-service"):
     return config.initialize_tracer()
 
 
-tracer = init_tracer("frontend-service")
+tracer = init_tracer("frontend")
 
 
 @app.route("/")
