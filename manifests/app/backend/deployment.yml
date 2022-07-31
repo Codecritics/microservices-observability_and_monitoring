@@ -25,5 +25,6 @@ spec:
           image: codecritics/metrics-backend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - name: backend
+              containerPort: 8080
       restartPolicy: Always

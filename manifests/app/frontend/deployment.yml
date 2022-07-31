@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: frontend-app
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/path: /metrics
@@ -20,4 +20,5 @@ spec:
         - name: frontend
           image: codecritics/metrics-frontend:latest
           ports:
-            - containerPort: 8080
+            - name: frontend
+              containerPort: 8080

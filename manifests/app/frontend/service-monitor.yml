@@ -9,7 +9,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: frontend
+      app: frontend-app
   endpoints:
     - port: frontend
       path: /metrics
