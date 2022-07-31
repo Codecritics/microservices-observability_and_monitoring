@@ -5,9 +5,9 @@ from jaeger_client import Config
 from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
-metrics = PrometheusMetrics(app)
+metrics = PrometheusMetrics(app, group_by="endpoint")
 
-metrics.info('app_info', 'Frontend', version='1.0.0')
+metrics.info('app_info', 'Frontend', version='1.0.3')
 
 endpoint_counter = metrics.counter('endpoint_counter', 'counting request by endpoint', labels={
     'endpoint': lambda: request.endpoint})
