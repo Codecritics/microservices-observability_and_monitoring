@@ -2,7 +2,7 @@ Flask==1.1.4
 MarkupSafe==2.0.1
 requests==2.23.0
 pylint==2.4.0
-jinja2==3.0.2
+jinja2==2.10.1
 flask_opentracing==1.1.0
 gunicorn==20.0.4
 jaeger-client==4.3.0
