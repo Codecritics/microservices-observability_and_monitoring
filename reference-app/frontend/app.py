@@ -9,6 +9,13 @@ metrics = PrometheusMetrics(app, group_by="endpoint")
 
 metrics.info('app_info', 'Frontend', version='1.0.3')
 
+metrics.register_default(
+    metrics.counter(
+        'by_path_counter', 'Request count by request paths',
+        labels={'path': lambda: request.path}
+    )
+)
+
 endpoint_counter = metrics.counter('endpoint_counter', 'counting request by endpoint', labels={
     'endpoint': lambda: request.endpoint})
 
