@@ -16,7 +16,7 @@ RequestsInstrumentor().instrument()
 
 metrics = PrometheusMetrics(app)
 # static information as metric
-metrics.info("app_info", "Trial", version="1.0.3")
+metrics.info("app_info", "Trial", version="1.0.0")
 
 logging.getLogger("").handlers = []
 logging.basicConfig(format="%(message)s", level=logging.DEBUG)

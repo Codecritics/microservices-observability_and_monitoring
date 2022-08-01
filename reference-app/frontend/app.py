@@ -7,7 +7,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 app = Flask(__name__)
 metrics = PrometheusMetrics(app, group_by="endpoint")
 
-metrics.info('app_info', 'Frontend', version='1.0.3')
+metrics.info('app_info', 'Frontend', version='1.0.0')
 
 metrics.register_default(
     metrics.counter(

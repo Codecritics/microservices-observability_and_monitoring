@@ -17,7 +17,7 @@ app.config['MONGO_URI'] = 'mongodb://example-mongodb-svc.default.svc.cluster.loc
 mongo = PyMongo(app)
 
 metrics = PrometheusMetrics(app, group_by='endpoint')
-metrics.info('app_info', 'Backend', version='1.0.3')
+metrics.info('app_info', 'Backend', version='1.0.0')
 
 metrics.register_default(
     metrics.counter(
@@ -25,6 +25,9 @@ metrics.register_default(
         labels={'path': lambda: request.path}
     )
 )
+
+by_full_path_counter = metrics.counter('full_path_counter', 'counting requests by full path', labels={
+                                       'full_path': lambda: request.full_path})
 
 endpoint_counter = metrics.counter(
     'endpoint_counter', 'Request count by endpoints',
@@ -57,6 +60,7 @@ tracer = init_tracer('backend')
 
 @app.route('/')
 @endpoint_counter
+@by_full_path_counter
 def homepage():
     with tracer.start_span('hello-world'):
         message = "Hello World"
@@ -65,6 +69,7 @@ def homepage():
 
 @app.route('/api')
 @endpoint_counter
+@by_full_path_counter
 def my_api():
     with tracer.start_span('api'):
         answer = "something"
@@ -73,6 +78,7 @@ def my_api():
 
 @app.route('/star', methods=['POST'])
 @endpoint_counter
+@by_full_path_counter
 def add_star():
     star = mongo.db.stars
     name = request.json['name']
@@ -84,6 +90,7 @@ def add_star():
 
 
 @endpoint_counter
+@by_full_path_counter
 @app.route('/status')
 def healthcheck():
     response = app.response_class(
@@ -96,4 +103,4 @@ def healthcheck():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(threaded=True)
