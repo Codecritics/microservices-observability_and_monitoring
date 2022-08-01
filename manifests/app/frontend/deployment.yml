@@ -21,6 +21,15 @@ spec:
       containers:
         - name: frontend
           image: codecritics/metrics-frontend:latest
+          imagePullPolicy: Always
           ports:
             - name: frontend
               containerPort: 8080
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /status
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /status

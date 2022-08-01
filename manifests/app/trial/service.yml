@@ -9,5 +9,5 @@ spec:
     - name: trial
       port: 8082
       targetPort: 8080
-      nodePort: 30002
+      nodePort: 30012
   type: LoadBalancer

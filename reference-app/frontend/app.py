@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 
+import json
 import logging
 from jaeger_client import Config
 from prometheus_flask_exporter import PrometheusMetrics
@@ -43,6 +44,18 @@ tracer = init_tracer("frontend")
 @endpoint_counter
 def homepage():
     return render_template("main.html")
+
+
+@app.route("/status")
+@endpoint_counter
+def healthcheck():
+    response = app.response_class(
+        response=json.dumps({"result": "OK - healthy"}),
+        status=200,
+        mimetype='application/json'
+    )
+    app.logger.info('Status request successful')
+    return response
 
 
 if __name__ == "__main__":

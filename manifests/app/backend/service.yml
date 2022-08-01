@@ -11,5 +11,5 @@ spec:
     - name: backend
       port: 8081
       targetPort: 8080
-      nodePort: 30001
+      nodePort: 30010
   type: LoadBalancer

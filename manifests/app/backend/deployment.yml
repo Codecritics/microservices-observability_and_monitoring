@@ -29,4 +29,12 @@ spec:
           ports:
             - name: backend
               containerPort: 8080
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /status
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /status
       restartPolicy: Always
