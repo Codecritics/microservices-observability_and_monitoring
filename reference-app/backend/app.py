@@ -93,3 +93,7 @@ def healthcheck():
     )
     app.logger.info('Status request successful')
     return response
+
+
+if __name__ == "__main__":
+    app.run()
