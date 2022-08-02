@@ -56,9 +56,23 @@ Description: The MongoDB Service does not exists which is why it's failing to pr
 
 ## Creating SLIs and SLOs
 *TODO:* We want to create an SLO guaranteeing that our application has a 99.95% uptime per month. Name four SLIs that you would use to measure the success of this SLO.
-
+1. Uptime - Services should be up and running for at least 99.999% of the time on monthly basis.
+2. Http Error Rate - Services returning 20x HTTP status should be <= 98% (per month) - Error per second <= 0.05% of the requests.
+3. Http request latency - Requests responses should less than 50ms.
+4. CPU and Memory usage - Services should not overload.
 ## Building KPIs for our plan
 *TODO*: Now that we have our SLIs and SLOs, create a list of 2-3 KPIs to accurately measure these metrics as well as a description of why those KPIs were chosen. We will make a dashboard for this, but first write them down here.
+1. Uptime (pod uptime):
+* Backend uptime
+* Frontend uptime
+2. 4XX and 5XX errors
+* Number of successful request / number of failing requests (for frontend|backend)
+3. Traffic:
+* Average response time
+4. Resources Usage:
+* CPU usage
+* RAM usage
+* Disk usage
 
 ## Final Dashboard
 *TODO*: Create a Dashboard containing graphs that capture all the metrics of your KPIs and adequately representing your SLIs and SLOs. Include a screenshot of the dashboard here, and write a text description of what graphs are represented in the dashboard.  
