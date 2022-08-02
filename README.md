@@ -41,17 +41,17 @@ real time how a service is performing to show whether the SLOs is achieved.
 
 TROUBLE TICKET
 
-Name:
+Name: Backend- Http 500 Error
 
-Date:
+Date: 02/08/2022
 
-Subject:
+Subject: MongoDB service missing
 
-Affected Area:
+Affected Area: Endpoint: /star
 
-Severity:
+Severity: High
 
-Description:
+Description: The MongoDB Service does not exists which is why it's failing to process POST requests to /star.
 
 
 ## Creating SLIs and SLOs
