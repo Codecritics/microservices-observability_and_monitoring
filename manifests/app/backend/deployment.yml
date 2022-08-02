@@ -25,7 +25,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: JAEGER_AGENT_HOST
-              value: my-jaeger-tracing.observability.svc.cluster.local
+              value: my-jaeger-tracing-agent.observability.svc.cluster.local
           ports:
             - name: backend
               containerPort: 8080
