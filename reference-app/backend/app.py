@@ -61,6 +61,7 @@ tracing = FlaskTracing(tracer, True, app)
 
 @app.route('/')
 @endpoint_counter
+@tracing.trace()
 @by_full_path_counter
 def homepage():
     with tracer.start_span('hello-world'):
@@ -70,6 +71,7 @@ def homepage():
 
 @app.route('/api')
 @endpoint_counter
+@tracing.trace()
 @by_full_path_counter
 def my_api():
     with tracer.start_span('api'):
@@ -79,6 +81,7 @@ def my_api():
 
 @app.route('/star', methods=['POST'])
 @endpoint_counter
+@tracing.trace()
 @by_full_path_counter
 def add_star():
     star = mongo.db.stars
@@ -92,6 +95,7 @@ def add_star():
 
 @endpoint_counter
 @by_full_path_counter
+@tracing.trace()
 @app.route('/status')
 def healthcheck():
     response = app.response_class(
