@@ -8,7 +8,7 @@ from os import getenv
 from prometheus_flask_exporter import PrometheusMetrics
 
 
-JAEGER_HOST = getenv('JAEGER_HOST', 'localhost')
+JAEGER_HOST = getenv('JAEGER_AGENT_HOST', 'localhost')
 
 app = Flask(__name__)
 
@@ -35,7 +35,7 @@ endpoint_counter = metrics.counter(
 )
 
 
-def init_tracer(backend):
+def init_tracer(service):
     logging.getLogger('').handlers = []
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
@@ -48,7 +48,7 @@ def init_tracer(backend):
             'logging': True,
             'local_agent': {'reporting_host': JAEGER_HOST},
         },
-        service_name=backend,
+        service_name=service,
     )
 
     # this call also sets opentracing.tracer

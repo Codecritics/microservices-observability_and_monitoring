@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 
 import json
 import logging
-from jaeger_client import Config
 from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
@@ -19,25 +18,6 @@ metrics.register_default(
 
 endpoint_counter = metrics.counter('endpoint_counter', 'counting request by endpoint', labels={
     'endpoint': lambda: request.endpoint})
-
-
-# Tracing Initialization
-def init_tracer(service_name="frontend"):
-    logging.getLogger('').handlers = []
-    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
-
-    config = Config(
-        config={
-            'logging': True,
-        },
-        service_name=service_name,
-        validate=True
-    )
-
-    return config.initialize_tracer()
-
-
-tracer = init_tracer("frontend")
 
 
 @app.route("/")
