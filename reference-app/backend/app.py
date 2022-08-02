@@ -46,7 +46,6 @@ def init_tracer(service):
                 'param': 1,
             },
             'logging': True,
-            'local_agent': {'reporting_host': JAEGER_HOST},
         },
         service_name=service,
     )
