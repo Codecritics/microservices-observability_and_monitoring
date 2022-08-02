@@ -71,7 +71,6 @@ def homepage():
 
 @app.route('/api')
 @endpoint_counter
-@tracing.trace()
 @by_full_path_counter
 def my_api():
     with tracer.start_span('api'):
