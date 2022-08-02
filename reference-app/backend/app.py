@@ -1,12 +1,12 @@
 from flask import Flask, request, jsonify, json
 from flask_pymongo import PyMongo
-
+from flask_opentracing import FlaskTracing
 from jaeger_client import Config
 import logging
+
 from os import getenv
 
 from prometheus_flask_exporter import PrometheusMetrics
-
 
 JAEGER_HOST = getenv('JAEGER_AGENT_HOST', 'localhost')
 
@@ -27,7 +27,7 @@ metrics.register_default(
 )
 
 by_full_path_counter = metrics.counter('full_path_counter', 'counting requests by full path', labels={
-                                       'full_path': lambda: request.full_path})
+    'full_path': lambda: request.full_path})
 
 endpoint_counter = metrics.counter(
     'endpoint_counter', 'Request count by endpoints',
@@ -56,6 +56,7 @@ def init_tracer(service):
 
 
 tracer = init_tracer('backend')
+tracing = FlaskTracing(tracer, True, app)
 
 
 @app.route('/')

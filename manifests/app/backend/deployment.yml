@@ -20,12 +20,12 @@ spec:
         app: backend
     spec:
       containers:
-        - env:
-            - name: JAEGER_AGENT_HOST
-              value: my-jaeger-tracing.observability.svc.cluster.local
-          name: backend
+        - name: backend
           image: codecritics/metrics-backend:latest
           imagePullPolicy: Always
+          env:
+            - name: JAEGER_AGENT_HOST
+              value: my-jaeger-tracing.observability.svc.cluster.local
           ports:
             - name: backend
               containerPort: 8080

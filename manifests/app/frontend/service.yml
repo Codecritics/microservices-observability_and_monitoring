@@ -11,5 +11,5 @@ spec:
     - name: frontend
       port: 8080
       targetPort: 8080
-      nodePort: 30011
+      nodePort: 30000
   type: LoadBalancer
