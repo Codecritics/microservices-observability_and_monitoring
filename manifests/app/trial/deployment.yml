@@ -19,5 +19,8 @@ spec:
       containers:
         - name: trial
           image: codecritics/metrics-trial:latest
+          env:
+            - name: JAEGER_AGENT_HOST
+              value: my-jaeger-tracing-agent.observability.svc.cluster.local
           ports:
             - containerPort: 8080
