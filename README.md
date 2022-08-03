@@ -41,7 +41,7 @@ real time how a service is performing to show whether the SLOs is achieved.
 
 TROUBLE TICKET
 
-Name: Backend- Http 500 Error
+Name: Backend - Http 500 Error
 
 Date: 02/08/2022
 

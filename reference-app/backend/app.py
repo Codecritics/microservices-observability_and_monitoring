@@ -83,13 +83,17 @@ def my_api():
 @tracing.trace()
 @by_full_path_counter
 def add_star():
-    star = mongo.db.stars
-    name = request.json['name']
-    distance = request.json['distance']
-    star_id = star.insert({'name': name, 'distance': distance})
-    new_star = star.find_one({'_id': star_id})
-    output = {'name': new_star['name'], 'distance': new_star['distance']}
-    return jsonify({'result': output})
+    try:
+        star = mongo.db.stars
+        name = request.json['name']
+        distance = request.json['distance']
+        star_id = star.insert({'name': name, 'distance': distance})
+        new_star = star.find_one({'_id': star_id})
+        output = {'name': new_star['name'], 'distance': new_star['distance']}
+    except Exception as e:
+        return jsonify({'message': e})
+    else:
+        return jsonify({'result': output})
 
 
 @endpoint_counter
