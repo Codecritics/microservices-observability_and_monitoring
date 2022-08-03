@@ -72,7 +72,12 @@ Description: The MongoDB Service does not exists which is why it's failing to pr
 4. Resources Usage:
 * CPU usage
 * RAM usage
-* Disk usage
 
 ## Final Dashboard
 *TODO*: Create a Dashboard containing graphs that capture all the metrics of your KPIs and adequately representing your SLIs and SLOs. Include a screenshot of the dashboard here, and write a text description of what graphs are represented in the dashboard.  
+![](answer-img/final_dashboard.png)
+1. Measure Uptime of Backend and frontend
+2. Measure Backend and Frontend Http \[4XX,5XX\] Errors
+3. Measure average response time of the last 30s  
+4a. Measure CPU usage of backend and frontend  
+4b. Measure Memory usage of backend and frontend
