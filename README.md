@@ -41,18 +41,18 @@ real time how a service is performing to show whether the SLOs is achieved.
 
 TROUBLE TICKET
 
-Name: Backend - Http 500 Error
+Name: Error on trial/app/app.py
 
 Date: 02/08/2022
 
-Subject: MongoDB service missing
+Subject: Cannot retrieve the number of jobs from provided URL
 
-Affected Area: Endpoint: /star
+Affected Area: Endpoint: File "/app/app.py", line 66, in homepage
 
 Severity: High
 
-Description: The MongoDB Service does not exists which is why it's failing to process POST requests to /star.
-
+Description: JSONDecodeError: There's an issue around the way the request-response data is structured, cannot evaluate the length of the JSON output.
+![](answer-img/ticket.png)
 
 ## Creating SLIs and SLOs
 *TODO:* We want to create an SLO guaranteeing that our application has a 99.95% uptime per month. Name four SLIs that you would use to measure the success of this SLO.
