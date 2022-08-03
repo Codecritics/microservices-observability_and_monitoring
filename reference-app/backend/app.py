@@ -91,7 +91,7 @@ def add_star():
             new_star = star.find_one({'_id': star_id})
             output = {'name': new_star['name'], 'distance': new_star['distance']}
         except Exception as e:
-            return jsonify({'message': e})
+            return jsonify({'message': str(e)})
 
     return jsonify({'result': output})
 
